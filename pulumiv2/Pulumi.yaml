@@ -1,0 +1,6 @@
+name: self-hosted-platform
+runtime:
+  name: nodejs
+  options:
+    typescript: true
+description: Pulumi v2 setup for self-hosted development platform infrastructure

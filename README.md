@@ -171,6 +171,20 @@ ports:
 - **Use Portainer** at `http://YOUR-IP:9000` to manage containers visually
 - **Add monitoring** like Uptime Kuma from the template when needed
 
+## 🚀 Alternative: Pulumi Infrastructure as Code
+
+### Work in Progress: Pulumi v2 Setup
+
+We're building a Pulumi-based alternative to Docker Compose in the `pulumiv2/` directory. This provides:
+
+- **Type-safe infrastructure** with TypeScript/Python/Go
+- **State management** and rollback capabilities  
+- **Better secrets handling** with encrypted state
+- **Multi-environment support** with stacks
+- **Preview changes** before applying
+
+[Learn more about the Pulumi setup →](./pulumiv2/README.md)
+
 ## 🤝 Need Help?
 
 1. Check service logs: `docker logs <container_name>`

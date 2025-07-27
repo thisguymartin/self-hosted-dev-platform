@@ -1,0 +1,20 @@
+{
+  "name": "self-hosted-platform-pulumi",
+  "version": "1.0.0",
+  "description": "Pulumi v2 infrastructure for self-hosted development platform",
+  "main": "index.ts",
+  "scripts": {
+    "pulumi:up": "pulumi up",
+    "pulumi:preview": "pulumi preview",
+    "pulumi:destroy": "pulumi destroy"
+  },
+  "devDependencies": {
+    "@pulumi/docker": "^4.8.0",
+    "@pulumi/pulumi": "^3.186.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@pulumi/command": "^1.1.0",
+    "@types/node": "^24.1.0"
+  }
+}
