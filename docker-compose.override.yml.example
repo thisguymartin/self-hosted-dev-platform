@@ -1,0 +1,92 @@
+# Docker Compose Override - Test Databases
+# Copy this file to docker-compose.override.yml and uncomment the databases you need
+
+version: '3.8'
+
+services:
+  # --- Additional PostgreSQL Instance ---
+  # postgres_test:
+  #   image: postgres:15-alpine
+  #   container_name: postgres_test
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik_network
+  #   ports:
+  #     - "5433:5432"  # Different port to avoid conflicts
+  #   environment:
+  #     - POSTGRES_DB=testdb
+  #     - POSTGRES_USER=testuser
+  #     - POSTGRES_PASSWORD=testpass123
+  #   volumes:
+  #     - postgres_test_data:/var/lib/postgresql/data
+
+  # --- Additional MySQL Instance ---
+  # mysql_test:
+  #   image: mysql:8.0
+  #   container_name: mysql_test
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik_network
+  #   ports:
+  #     - "3307:3306"  # Different port to avoid conflicts
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpass123
+  #     - MYSQL_DATABASE=testdb
+  #     - MYSQL_USER=testuser
+  #     - MYSQL_PASSWORD=testpass123
+  #   volumes:
+  #     - mysql_test_data:/var/lib/mysql
+
+  # --- MongoDB ---
+  # mongodb_test:
+  #   image: mongo:6
+  #   container_name: mongodb_test
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik_network
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=admin
+  #     - MONGO_INITDB_ROOT_PASSWORD=adminpass123
+  #     - MONGO_INITDB_DATABASE=testdb
+  #   volumes:
+  #     - mongodb_test_data:/data/db
+
+  # --- Redis ---
+  # redis_test:
+  #   image: redis:7-alpine
+  #   container_name: redis_test
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik_network
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --requirepass testpass123
+  #   volumes:
+  #     - redis_test_data:/data
+
+  # --- MariaDB ---
+  # mariadb_test:
+  #   image: mariadb:10.11
+  #   container_name: mariadb_test
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik_network
+  #   ports:
+  #     - "3308:3306"
+  #   environment:
+  #     - MARIADB_ROOT_PASSWORD=rootpass123
+  #     - MARIADB_DATABASE=testdb
+  #     - MARIADB_USER=testuser
+  #     - MARIADB_PASSWORD=testpass123
+  #   volumes:
+  #     - mariadb_test_data:/var/lib/mysql
+
+# Volumes for test databases (uncomment as needed)
+# volumes:
+#   postgres_test_data:
+#   mysql_test_data:
+#   mongodb_test_data:
+#   redis_test_data:
+#   mariadb_test_data:
