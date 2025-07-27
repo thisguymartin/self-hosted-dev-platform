@@ -1,6 +1,6 @@
-# Self-Hosted Development Platform
+# Portainer Setup - Self-Hosted Development Platform
 
-Simple Docker setup with monitoring and databases - ready in 2 minutes! No domain needed.
+My Portainer setup with Docker services, monitoring and databases - ready in 2 minutes! No domain needed.
 
 ## 🚀 Quick Start
 
