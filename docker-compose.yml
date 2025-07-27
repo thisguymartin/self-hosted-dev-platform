@@ -1,10 +1,35 @@
 version: '3.8'
 
 services:
+  # Traefik - Reverse Proxy and Load Balancer
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8888:8080"  # Traefik dashboard
+    networks:
+      - traefik_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/data/traefik.yml:/traefik.yml:ro
+      - ./traefik/data/dynamic.yml:/dynamic.yml:ro
+      - ./traefik/data/acme.json:/acme.json
+      - ./traefik/data/logs:/logs
+    environment:
+      - TRAEFIK_LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Portainer - Docker Management UI
   portainer:
     image: portainer/portainer-ce:latest
-    container_name: portainer_main
+    container_name: portainer
     restart: unless-stopped
     networks:
       - traefik_network
@@ -13,94 +38,18 @@ services:
       - portainer_data:/data
     ports:
       - "9000:9000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.localhost`)"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # Uptime Kuma - Monitoring
-  uptimekuma:
-    image: louislam/uptime-kuma:latest
-    container_name: uptimekuma_main
-    restart: unless-stopped
-    networks:
-      - traefik_network
-    volumes:
-      - uptimekuma_data:/app/data
-    ports:
-      - "3001:3001"
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: postgres_main
-    restart: unless-stopped
-    networks:
-      - traefik_network
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # MySQL Database
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_main
-    restart: unless-stopped
-    networks:
-      - traefik_network
-    volumes:
-      - mysql_data:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Adminer - Database Management UI
-  adminer:
-    image: adminer:latest
-    container_name: adminer_main
-    restart: unless-stopped
-    networks:
-      - traefik_network
-    depends_on:
-      - postgres
-      - mysql
-    environment:
-      - ADMINER_DEFAULT_SERVER=postgres
-    ports:
-      - "8080:8080"
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
 volumes:
   portainer_data:
-  uptimekuma_data:
-  postgres_data:
-  mysql_data:
 
 networks:
   traefik_network:

@@ -8,13 +8,15 @@ echo ""
 echo "📦 Docker Services:"
 docker compose ps --format "table {{.Name}}\t{{.Status}}"
 
-# Check databases
+# Check core services specifically
 echo ""
-echo "🗄️  Databases:"
-docker exec postgres_main pg_isready &>/dev/null && echo "✅ PostgreSQL" || echo "❌ PostgreSQL"
-docker exec mysql_main mysqladmin ping &>/dev/null 2>&1 && echo "✅ MySQL" || echo "❌ MySQL"
+echo "🔧 Core Services:"
+docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "(traefik|portainer)" || echo "Core services not running"
 
-# List any additional test databases
+# Check if any template services are running
 echo ""
-echo "🧪 Test Databases:"
-docker ps --format "table {{.Names}}\t{{.Status}}" | grep -E "(postgres|mysql|mongo|redis)_test" || echo "None running"
+echo "📋 Additional Services (from template):"
+docker ps --format "table {{.Names}}\t{{.Status}}" | grep -vE "(traefik|portainer)" | tail -n +2 || echo "None running"
+
+echo ""
+echo "💡 To add more services, use docker-compose.template.yml"

@@ -18,44 +18,63 @@ That's it! Your platform is running.
 
 ## 📦 What's Included
 
+### Core Services (Main Setup)
+
 | Service | URL | Purpose |
 |---------|-----|---------|
 | **Traefik** | `http://YOUR-IP:8888` | Reverse proxy dashboard |
 | **Portainer** | `http://YOUR-IP:9000` | Docker management UI |
-| **Uptime Kuma** | `http://YOUR-IP:3001` | Service monitoring |
-| **Adminer** | `http://YOUR-IP:8080` | Database management UI |
-| **PostgreSQL** | `YOUR-IP:5432` | PostgreSQL database |
-| **MySQL** | `YOUR-IP:3306` | MySQL database |
+
+### Additional Services (Template)
+
+The `docker-compose.template.yml` file includes additional services you can add:
+
+| Service | Default Port | Purpose |
+|---------|-------------|------|
+| **Uptime Kuma** | `:3001` | Service monitoring |
+| **Adminer** | `:8080` | Database management UI |
+| **PostgreSQL** | `:5432` | PostgreSQL database |
+| **MySQL** | `:3306` | MySQL database |
+| **GitLab CE** | `:80`, `:2222` (SSH) | Git repository manager |
+| **Redis** | `:6379` | In-memory data store |
+| **Elasticsearch** | `:9200` | Search engine |
+| **Kibana** | `:5601` | Elasticsearch dashboard |
+| **Nextcloud** | `:80` | File hosting |
 
 Replace `YOUR-IP` with:
 - `localhost` if accessing from the same machine
 - Your server's IP address if accessing remotely
 
-## 🧪 Adding Test Databases
+## 🧪 Adding Additional Services
 
-Super easy! Just copy and edit:
+### Using the Template
 
-```bash
-cp docker-compose.override.yml.example docker-compose.override.yml
-nano docker-compose.override.yml  # Uncomment what you need
-docker compose up -d
-```
+The project includes a `docker-compose.template.yml` with many useful services. To add services:
 
-### Available Test Databases
+1. **Option 1: Copy services to your main compose file**
+   ```bash
+   # Copy the service definition you need from docker-compose.template.yml
+   # to your docker-compose.yml
+   ```
 
-The override file includes templates for:
-- **PostgreSQL** (port 5433)
-- **MySQL** (port 3307) 
-- **MongoDB** (port 27017)
-- **Redis** (port 6379)
-- **MariaDB** (port 3308)
+2. **Option 2: Create an override file**
+   ```bash
+   # Create docker-compose.override.yml with the services you want
+   # Docker Compose will automatically merge both files
+   ```
 
-### Example: Add MongoDB
+3. **Option 3: Run template directly**
+   ```bash
+   # For testing purposes
+   docker compose -f docker-compose.yml -f docker-compose.template.yml up -d
+   ```
 
-1. Edit `docker-compose.override.yml`
-2. Uncomment the MongoDB section
+### Example: Add Uptime Kuma
+
+1. Copy the Uptime Kuma service from `docker-compose.template.yml`
+2. Add it to your `docker-compose.yml` or create a `docker-compose.override.yml`
 3. Run `docker compose up -d`
-4. Connect to `YOUR-IP:27017`
+4. Access at `http://YOUR-IP:3001`
 
 ## 🛠️ Common Commands
 
@@ -71,18 +90,18 @@ make health    # Quick health check
 
 ### Default Credentials
 
-Edit these in `.env` before first run:
+When using services from the template, edit these in `.env` before first run:
 
 **PostgreSQL:**
-- User: `devuser`
-- Password: `changeme123`
-- Database: `devdb`
+- User: `postgres` (or set `POSTGRES_USER`)
+- Password: `changeme` (set `POSTGRES_PASSWORD`)
+- Database: `myapp` (or set `POSTGRES_DB`)
 - Port: `5432`
 
 **MySQL:**
-- User: `devuser`
-- Password: `changeme123`
-- Database: `devdb`
+- User: `mysql` (or set `MYSQL_USER`)
+- Password: `changeme` (set `MYSQL_PASSWORD`)
+- Database: `myapp` (or set `MYSQL_DATABASE`)
 - Port: `3306`
 
 ### Connection Examples
@@ -98,7 +117,7 @@ mysql -h YOUR-IP -u devuser -p devdb
 # Use hostnames: postgres or mysql
 ```
 
-### From Adminer UI
+### From Adminer UI (if added from template)
 
 1. Visit `http://YOUR-IP:8080`
 2. Select system: PostgreSQL or MySQL
@@ -124,8 +143,12 @@ docker logs portainer_main
 
 ```bash
 # Allow ports (Ubuntu/Debian)
-sudo ufw allow 8888  # Traefik
+sudo ufw allow 80    # HTTP
+sudo ufw allow 443   # HTTPS
+sudo ufw allow 8888  # Traefik dashboard
 sudo ufw allow 9000  # Portainer
+
+# If using services from template:
 sudo ufw allow 3001  # Uptime Kuma
 sudo ufw allow 8080  # Adminer
 sudo ufw allow 5432  # PostgreSQL
@@ -143,9 +166,10 @@ ports:
 ## 📝 Tips
 
 - **Change passwords** in `.env` before deploying
-- **Use override file** for test databases to keep main compose clean
-- **Check Uptime Kuma** at `http://YOUR-IP:3001` to monitor all services
+- **Use the template file** (`docker-compose.template.yml`) to see available services
+- **Keep core services minimal** - only Traefik and Portainer in main setup
 - **Use Portainer** at `http://YOUR-IP:9000` to manage containers visually
+- **Add monitoring** like Uptime Kuma from the template when needed
 
 ## 🤝 Need Help?
 
