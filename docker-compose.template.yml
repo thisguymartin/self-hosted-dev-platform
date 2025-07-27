@@ -40,6 +40,8 @@ services:
     restart: unless-stopped
     networks:
       - traefik_network
+    ports:
+      - "5432:5432" # Add this line
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
