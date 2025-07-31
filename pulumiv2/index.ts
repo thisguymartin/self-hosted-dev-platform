@@ -126,7 +126,6 @@ const nginx = new docker.Container("nginx", {
     networksAdvanced: [{
         name: network.name,
     }],
-    dependsOn: [portainer],
 })
 
 // Save the certificate to file for Nginx to use
