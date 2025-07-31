@@ -34,7 +34,7 @@ const portainer = new docker.Container("portainer", {
         hostPath: "/var/run/docker.sock",
     }, {
         containerPath: "/data",
-        hostPath: "portainer_data",
+        hostPath: pulumi.interpolate`${process.cwd()}/portainer_data`,
     }],
     networksAdvanced: [{
         name: network.name,
